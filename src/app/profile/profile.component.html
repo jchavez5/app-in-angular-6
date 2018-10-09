@@ -2,8 +2,8 @@
   <div class="container pato45">
     <div class="row">
       <div class="col-md-3">
-        <div class="avatarFrameonline">
-          <img  [src]="croppedImage" class="avatarImage img-fluid">
+        <div class="avatarFrameonline" *ngIf="user">
+          <img  [src]="croppedImage || user.avatar || 'assets/img/generic_avatar.png'" class="avatarImage img-fluid">
         </div>        
         <hr/>
         <div>
@@ -23,8 +23,7 @@
           (imageCropped)="imageCropped($event)"
           (imageLoaded)="imageLoaded()"
           (loadImageFailed)="loadImageFailed()"
-      ></image-cropper>
-      
+      ></image-cropper>    
      
          <div>
            <label fixed>Nick</label>
@@ -36,7 +35,7 @@
          </div>
          <div>
            <label fixed>Email</label>
-           <input [(ngModel)]="user.email" type="email" class="form-control">
+           <input [(ngModel)]="user.email" type="email" disabled  class="form-control">
          </div>
          <div>
            <label fixed>Status</label>

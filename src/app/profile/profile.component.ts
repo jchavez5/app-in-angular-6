@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../interfaces/user';
 import { UserService } from '../services/user.service';
 import { ImageCroppedEvent } from 'ngx-image-cropper/src/image-cropper.component';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-profile',
@@ -13,8 +14,10 @@ export class ProfileComponent implements OnInit {
   user:User;
   imageChangedEvent: any = '';
   croppedImage: any = '';
+  picture:any;
   constructor(private userService:UserService,
-              private autenticationService:AutenticationService) {
+              private autenticationService:AutenticationService,
+              private firebaseStorage:AngularFireStorage) {
                 this.autenticationService.getStatus().subscribe(
                   (status)=>{
                     this.userService.getUserById(status.uid).valueChanges().subscribe(
@@ -36,13 +39,29 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
   }
   saveSettings(){
-    this.userService.editUser(this.user).then(()=>{
-      alert('cambios guardados!');
-    }).catch((error)=>{
-      alert('Hubo un error');
+    if (this.croppedImage) {
+    const currentPictureId = Date.now();
+    const pictures = this.firebaseStorage.ref('pictures/' + currentPictureId + '.jpg').putString(this.croppedImage, 'data_url');
+    pictures.then(() => {
+      this.picture = this.firebaseStorage.ref('pictures/' + currentPictureId + '.jpg').getDownloadURL();
+      this.picture.subscribe((p) => {
+        this.userService.setAvatar(p, this.user.uid).then(() => {
+          alert('Avatar subido correctamentne');
+        }).catch((error) => {
+          alert('Hubo un error al tratar de subir la imagen');
+          console.log(error);
+        });
+      });
+    }).catch((error) => {
       console.log(error);
-      
     });
+  } else {
+    this.userService.editUser(this.user).then(() => {
+      alert('Cambios guardados!');
+    }).catch((error) => {
+      alert('Hubo un error');
+      console.log(error);    });
+  }
   }
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;

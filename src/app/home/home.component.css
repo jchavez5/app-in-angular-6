@@ -1,0 +1,19 @@
+#homeContainer{
+background: url('/assets/img/msnbg.jpg');
+background-size: 100%;
+background-repeat: no-repeat;
+}
+#whiteBorderClassBox{
+    border: 2px solid rgb(255, 255, 255,0.75);
+    padding: 8px;
+}
+#homeHeadContainer{
+    background-color: rgb(255, 255, 255,.50);
+}
+#whiteContainerPadded{
+    padding: 15px;
+    background-color: #feffff;
+}
+img.icon{
+width: 30px;
+}
